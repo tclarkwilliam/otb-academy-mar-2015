@@ -1,10 +1,18 @@
 class Game
+  attr_reader :lives
+  
   def initialize(answer)
     @answer = answer
+    @lives = 10
   end
   
   def guess(character)
-    @answer.include?(character)
+    if @answer.include?(character)
+      true
+    else
+      @lives -= 1
+      false
+    end
   end
     
 end
@@ -26,4 +34,11 @@ RSpec.describe "Hangman" do
     expect( game.guess("b") ).to eq(true)
   end
   
+  it "should decrement lives when guessed incorrectly" do
+    lives = game.lives
+    game.guess("s")
+    expect( game.lives ).to eq( lives - 1)
+  end
+  
+    
 end
