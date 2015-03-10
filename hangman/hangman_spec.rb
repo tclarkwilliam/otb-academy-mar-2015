@@ -8,6 +8,7 @@ class Game
   end
   
   def guess(character)
+    return "Game Over!" if @lives == 0
     @guesses << character
     if @answer.include?(character)
       true
@@ -49,6 +50,14 @@ RSpec.describe "Hangman" do
   it "show board with correct letters revealed" do
     game.guess("y")
     expect( game.board ).to eq("***y")
+  end
+  
+  it "game over when ran out of lives" do
+    10.times do
+      game.guess("a")
+    end
+    expect( game.guess("a") ).to eq("Game Over!")
+      
   end
     
 end
