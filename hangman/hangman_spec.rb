@@ -2,7 +2,7 @@ class Game
   attr_reader :lives
   
   def initialize(answer)
-    @answer = answer
+    @answer = Word.new(answer)
     @lives = 10
     @guesses = [" "]
   end
@@ -11,26 +11,41 @@ class Game
     @guesses << character
     return "Game Over!" if @lives == 0
     return "You win!" if win? 
-    if @answer.include?(character)
+    if @answer.single_letter?(character)
       "correct guess"
     else
       @lives -= 1
       "incorrect guess"
     end
   end
-  
+   
   def win?
-    @answer.gsub(/[#{regexp}]/, "").size == 0
+    @answer.value.gsub(/[#{regexp}]/, "").size == 0
   end
   
   def board
-    @answer.gsub(/[^#{regexp}]/, "*")
+    @answer.value.gsub(/[^#{regexp}]/, "*")
   end
   
   def regexp
     @guesses.join 
   end
-    
+end
+
+class Word
+  attr_accessor :value
+  
+  def initialize(value)
+    @value = value
+  end
+  
+  def single_letter?(character)
+    @value.include?(character)
+  end
+  
+  def word_guess?(word)
+    @value == word
+  end
 end
 
 RSpec.describe "Hangman" do
