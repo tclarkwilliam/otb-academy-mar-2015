@@ -4,22 +4,31 @@ class Game
   def initialize(answer)
     @answer = answer
     @lives = 10
-    @guesses = []
+    @guesses = [" "]
   end
   
   def guess(character)
-    return "Game Over!" if @lives == 0
     @guesses << character
+    return "Game Over!" if @lives == 0
+    return "You win!" if win? 
     if @answer.include?(character)
-      true
+      "correct guess"
     else
       @lives -= 1
-      false
+      "incorrect guess"
     end
   end
   
+  def win?
+    @answer.gsub(/[#{regexp}]/, "").size == 0
+  end
+  
   def board
-    @answer.gsub(/[^#{@guesses}]/, "*")
+    @answer.gsub(/[^#{regexp}]/, "*")
+  end
+  
+  def regexp
+    @guesses.join 
   end
     
 end
@@ -34,11 +43,11 @@ RSpec.describe "Hangman" do
   end
     
   it "takes an incorrect guess" do
-    expect( game.guess("a") ).to eq(false)
+    expect( game.guess("a") ).to eq("incorrect guess")
   end
   
   it "takes a correct guess" do
-    expect( game.guess("b") ).to eq(true)
+    expect( game.guess("b") ).to eq("correct guess")
   end
   
   it "should decrement lives when guessed incorrectly" do
@@ -51,13 +60,28 @@ RSpec.describe "Hangman" do
     game.guess("y")
     expect( game.board ).to eq("***y")
   end
+
+  it "a new game should have a blank board" do
+    expect( game.board ).to eq("****")
+  end
+
   
   it "game over when ran out of lives" do
     10.times do
       game.guess("a")
     end
     expect( game.guess("a") ).to eq("Game Over!")
-      
+  end
+  
+  it "win if all letters revealed" do
+    game.guess("r")
+    game.guess("u")
+    game.guess("b")
+    expect( game.guess("y") ).to eq("You win!")
+  end
+  
+  it "when word guessed correctly" do
+    expect( game.guess("ruby")).to eq("You win!")
   end
     
 end
