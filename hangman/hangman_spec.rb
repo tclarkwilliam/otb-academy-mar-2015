@@ -8,8 +8,8 @@ class Game
   end
   
   def guess(character)
-    @guesses << character
     return "Game Over!" if @lives == 0
+    @guesses << character
     return "You win!" if win? 
     if @answer.single_letter?(character)
       "correct guess"
