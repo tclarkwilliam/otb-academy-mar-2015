@@ -4,15 +4,21 @@ class Game
   def initialize(answer)
     @answer = answer
     @lives = 10
+    @guesses = []
   end
   
   def guess(character)
+    @guesses << character
     if @answer.include?(character)
       true
     else
       @lives -= 1
       false
     end
+  end
+  
+  def board
+    @answer.gsub(/[^#{@guesses}]/, "*")
   end
     
 end
@@ -40,5 +46,9 @@ RSpec.describe "Hangman" do
     expect( game.lives ).to eq( lives - 1)
   end
   
+  it "show board with correct letters revealed" do
+    game.guess("y")
+    expect( game.board ).to eq("***y")
+  end
     
 end
