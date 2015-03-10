@@ -1,6 +1,12 @@
 class Game
   attr_reader :lives
   
+  # game.guess("x")
+  # game.board
+  # game.win?
+  # game.game_over?
+  # game.guess
+  
   def initialize(answer)
     @answer = Word.new(answer)
     @lives = 10
@@ -8,15 +14,11 @@ class Game
   end
   
   def guess(character)
-    return "Game Over!" if @lives == 0
     @guesses << character
-    return "You win!" if win? 
-    if @answer.single_letter?(character)
-      "correct guess"
-    else
-      @lives -= 1
-      "incorrect guess"
-    end
+  end
+  
+  def game_over?
+    @lives == 0
   end
    
   def win?
@@ -56,14 +58,7 @@ RSpec.describe "Hangman" do
   it "creates a new game" do
     expect( game.class ).to eq(Game)
   end
-    
-  it "takes an incorrect guess" do
-    expect( game.guess("a") ).to eq("incorrect guess")
-  end
   
-  it "takes a correct guess" do
-    expect( game.guess("b") ).to eq("correct guess")
-  end
   
   it "should decrement lives when guessed incorrectly" do
     lives = game.lives
@@ -85,18 +80,20 @@ RSpec.describe "Hangman" do
     10.times do
       game.guess("a")
     end
-    expect( game.guess("a") ).to eq("Game Over!")
+    expect( game.game_over ).to eq(true)
   end
   
   it "win if all letters revealed" do
     game.guess("r")
     game.guess("u")
     game.guess("b")
-    expect( game.guess("y") ).to eq("You win!")
+    game.guess("y")
+    expect( game.win? ).to eq(true)
   end
   
   it "when word guessed correctly" do
-    expect( game.guess("ruby")).to eq("You win!")
+    game.guess("ruby")
+    expect( game.win? ).to eq(true)
   end
     
 end

@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require_relative ../hangman.rb
+
+print 'Enter Guess: '
+guess = STDIN.getc
+puts guess
